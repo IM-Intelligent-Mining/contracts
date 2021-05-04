@@ -6,19 +6,8 @@ import "./IERC20.sol";
 import "./SafeMath.sol";
 import "./Context.sol";
 
-
-/*
-    Deploy:
-        - _im -> address of IM intelligent mining address
-        - _fundsWallet -> The wallet that will funds the staking rewards
-    After Deploy
-        - Need to send to _fundsWallet amount of IM needed for now for staking
-        - open allowance for new contract from _fundsWallet on IM intelligent mining address
-*/
-
-
 contract ImStaking is Context{
-    mapping (address => uint256) private _balances;
+    mapping (address => uint256) private _stakeBalances;
 
     using SafeMath for uint256;
     IERC20 public im;
@@ -41,18 +30,18 @@ contract ImStaking is Context{
         im.transferFrom(_msgSender(), address(this), _amount);
         // Lock the IM in the contract
         startLockTime[_msgSender()] = block.timestamp;
-        _balances[_msgSender()] += _amount;
+        _stakeBalances[_msgSender()] += _amount;
     }
 
     function withdrawn(uint256 _share) public {
-        uint256 accountBalance = _balances[_msgSender()];
+        uint256 accountBalance = _stakeBalances[_msgSender()];
         require(accountBalance >= _share, "Stake withdrawn exceeds balance");
 
         uint256 duration = block.timestamp.sub(startLockTime[_msgSender()]);
         require(duration >= lockTime, "IM Lock not expired yet");
 
         calcReward();
-        _balances[_msgSender()] -= _share;
+        _stakeBalances[_msgSender()] -= _share;
 
         im.transfer(_msgSender(), _share);
     }
@@ -72,7 +61,7 @@ contract ImStaking is Context{
         // We eligible for rewards
         if (lastReward != 0) {
             uint256 duration = block.timestamp.sub(lastReward);
-            uint256 amount = _balances[_msgSender()].mul(staking_apy).div(100).mul(duration).div(365 days);
+            uint256 amount = _stakeBalances[_msgSender()].mul(staking_apy).div(100).mul(duration).div(365 days);
             rewards[_msgSender()] += amount;
         }
     }
@@ -80,7 +69,7 @@ contract ImStaking is Context{
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view virtual returns (uint256) {
-        return _balances[account];
+    function stakeBalanceOf(address account) public view virtual returns (uint256) {
+        return _stakeBalances[account];
     }
 }
