@@ -35,28 +35,28 @@ contract TokenTimelock {
     /**
      * @return the token being held.
      */
-    function token() public view virtual returns (IERC20) {
+    function token() public view returns (IERC20) {
         return _token;
     }
 
     /**
      * @return the beneficiary of the tokens.
      */
-    function beneficiary() public view virtual returns (address) {
+    function beneficiary() public view returns (address) {
         return _beneficiary;
     }
 
     /**
      * @return the time when the tokens are released.
      */
-    function releaseTime() public view virtual returns (uint256) {
+    function releaseTime() public view returns (uint256) {
         return _releaseTime;
     }
 
     /**
      * @notice Transfers tokens held by timelock to beneficiary.
      */
-    function release() public virtual {
+    function release() external {
         // solhint-disable-next-line not-rely-on-time
         require(block.timestamp >= releaseTime(), "TokenTimelock: current time is before release time");
 
