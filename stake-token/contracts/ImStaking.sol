@@ -50,14 +50,12 @@ contract ImStaking is Context, Ownable{
     function stake(uint256 _amount) external {
         calcReward();
 
-        // Lock the IM in the contract
-        bool lockSucceeded = im.transferFrom(_msgSender(), address(this), _amount);
-        require(lockSucceeded == true, "Stake failed");
-
         startLockTime[_msgSender()] = block.timestamp;
         _stakeBalances[_msgSender()] += _amount;
         totalStaking += _amount;
 
+        // Lock the IM in the contract
+        require(im.transferFrom(_msgSender(), address(this), _amount) == true, "Stake failed");
         emit Stake(_msgSender(), _amount);
     }
 
