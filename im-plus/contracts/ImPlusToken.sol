@@ -46,13 +46,13 @@ contract ImPlusToken is ERC20, Ownable {
     function stake(uint256 _amount) external {
         calcReward();
 
+        startLockTime[_msgSender()] = block.timestamp;
+        _stakeBalances[_msgSender()] = _stakeBalances[_msgSender()].add(_amount);
+        totalStaking = totalStaking.add(_amount);
+
         // Lock the IM in the contract
         bool lockSucceeded = im.transferFrom(_msgSender(), address(this), _amount);
         require(lockSucceeded == true, "Stake failed");
-
-        startLockTime[_msgSender()] = block.timestamp;
-        _stakeBalances[_msgSender()] += _amount;
-        totalStaking += _amount;
 
         emit Stake(_msgSender(), _amount);
     }

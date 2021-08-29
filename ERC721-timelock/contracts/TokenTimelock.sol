@@ -27,6 +27,7 @@ contract TokenTimelock {
     constructor (IERC721 token_, address beneficiary_, uint256 releaseTime_, uint256 index_) {
         // solhint-disable-next-line not-rely-on-time
         require(releaseTime_ > block.timestamp, "TokenTimelock: release time is before current time");
+        require(beneficiary_ != address(0), "ERC20: transfer to the zero address");
         _token = token_;
         _beneficiary = beneficiary_;
         _releaseTime = releaseTime_;
