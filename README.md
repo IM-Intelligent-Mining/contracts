@@ -13,4 +13,6 @@ All the contracts deployed by iM Intelligent Mining (Contacts have been audited 
 
 ## Audits
 Audits' folder contains the audit reports from Certik
+<br/>
+Can be view also on https://www.certik.org/projects/intelligentmining
 
