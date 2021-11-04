@@ -101,7 +101,7 @@ contract ImPlusToken is ERC20, Ownable {
         if (lastReward != 0) {
             uint256 duration = block.timestamp.sub(lastReward);
             uint256 amount = _stakeBalances[_msgSender()].mul(staking_apy).mul(duration).div(100).div(365 days);
-            rewards[_msgSender()].add(amount);
+            rewards[_msgSender()] = rewards[_msgSender()].add(amount);
         }
     }
 
